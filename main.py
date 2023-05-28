@@ -6,7 +6,7 @@ def activityRequest(suffix: str) -> str:
     try:
         response = requests.get(f"http://www.boredapi.com/api/activity{suffix}")
         js = json.loads(response.text)
-        return (f"Activity: {js['activity']}")
+        return (f"\nActivity: {js['activity']}")
     except KeyError:
         return "Sorry, no such activity exists, please try again"
 
@@ -17,7 +17,7 @@ def randomActivity():
 
 
 def specificActivity():
-    print("\nEnter the type of activity (list below), number of participants (an integer),and price (decimal number) seperated by spaces")
+    print("\nEnter the type of activity (string, list below), number of participants (an integer),and price (decimal number) seperated by spaces")
     print("Possible types of activities: education, recreational, social, diy, charity, cooking, relaxation, music, busywork")
     print("If you have no preference for a specific attribute, don't enter anything for it\n")
     specificInput = input()
@@ -35,7 +35,6 @@ def specificActivity():
             numParticipants = int(input_value)
 
 
-
     suffix = []
     for assignedInputs in [typeActivity, price, numParticipants]:
         if assignedInputs is not None:
@@ -48,28 +47,42 @@ def specificActivity():
     
     suffix = "&".join(suffix)
     print(activityRequest("?"+suffix)+"\n")
-        
 
+def playAgain() -> bool:
+        print("Play again? (yes or no)\n")
+        playInput = input()
+        try:
+            if playInput.lower()[0] == "n":
+                print("\nThanks for playing!")
+                return False
+            return True
+        except IndexError:
+            print("\nInvalid input, please try again\n")
+            return True
 
 def activitySelector():
-    print("______________________________________________________\n")
-    print("1. Random Activity")
-    print("2. Specify type, number of participants, and cost of activity")
-    print("______________________________________________________\n")
-    userInput = input()
-    try:
-        userInput = int(userInput)
-        if userInput not in [1,2]:
-            print("\nPlease enter a valid input (1 or 2)\n")
-            activitySelector()
-        if(userInput == 1):
-            randomActivity()
-        else:
-            specificActivity()
+    play = True
+    while play:
+        print("______________________________________________________\n")
+        print("1. Random Activity")
+        print("2. Specify type, number of participants, and cost of activity")
+        print("______________________________________________________\n")
+        userInput = input()
+        try:
+            userInput = int(userInput)
+            if userInput not in [1,2]:
+                print("\nPlease enter a valid input (1 or 2)\n")
+                activitySelector()
+            if(userInput == 1):
+                randomActivity()
+            else:
+                specificActivity()
 
-    except ValueError:
-        print("\nPlease enter an integer\n")
-        activitySelector()
+        except ValueError:
+            print("\nPlease enter an integer\n")
+            activitySelector()
+
+        play = playAgain()
     
     
 
